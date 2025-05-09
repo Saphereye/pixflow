@@ -1,0 +1,49 @@
+[gd_scene load_steps=3 format=3 uid="uid://cmw2exyygo1h7"]
+
+[ext_resource type="Script" uid="uid://cwufpu2w5ys7e" path="res://scenes/Nodes/load.gd" id="1_8en35"]
+[ext_resource type="Texture2D" uid="uid://ca5a1k2ttjoyq" path="res://icon.svg" id="1_kr2si"]
+
+[node name="Load" type="GraphNode"]
+offset_right = 384.0
+offset_bottom = 256.0
+title = "Load"
+slot/0/left_enabled = false
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+script = ExtResource("1_8en35")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("1_kr2si")
+stretch_mode = 3
+
+[node name="FileDialog" type="FileDialog" parent="."]
+title = "Open a File"
+size = Vector2i(453, 455)
+ok_button_text = "Open"
+dialog_hide_on_ok = true
+file_mode = 0
+use_native_dialog = true
+
+[node name="MenuButton" type="Button" parent="."]
+layout_mode = 2
+text = "Open Image
+"
+
+[connection signal="file_selected" from="FileDialog" to="." method="_on_file_dialog_file_selected"]
+[connection signal="pressed" from="MenuButton" to="." method="_on_menu_button_pressed"]

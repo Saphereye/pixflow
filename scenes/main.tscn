@@ -1,0 +1,35 @@
+[gd_scene load_steps=2 format=3 uid="uid://c5vplxx6paikb"]
+
+[ext_resource type="Script" uid="uid://b5qnf1rrvs1n3" path="res://scenes/main.gd" id="1_vbtrx"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_vbtrx")
+
+[node name="PopupMenu" type="PopupMenu" parent="."]
+disable_3d = true
+initial_position = 4
+size = Vector2i(200, 100)
+min_size = Vector2i(200, 10)
+max_size = Vector2i(200, 500)
+hide_on_state_item_selection = true
+
+[node name="GraphEdit" type="GraphEdit" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 1920.0
+offset_bottom = 1080.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.0
+scroll_offset = Vector2(-1920, -1080)
+right_disconnects = true
+
+[connection signal="id_pressed" from="PopupMenu" to="." method="_on_popup_menu_id_pressed"]
+[connection signal="connection_request" from="GraphEdit" to="." method="_on_graph_edit_connection_request"]
+[connection signal="delete_nodes_request" from="GraphEdit" to="." method="_on_graph_edit_delete_nodes_request"]
+[connection signal="disconnection_request" from="GraphEdit" to="." method="_on_graph_edit_disconnection_request"]
+[connection signal="node_deselected" from="GraphEdit" to="." method="_on_graph_edit_node_deselected"]
+[connection signal="node_selected" from="GraphEdit" to="." method="_on_graph_edit_node_selected"]
