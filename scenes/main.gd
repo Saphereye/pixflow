@@ -42,50 +42,59 @@ func _on_popup_menu_id_pressed(id: int) -> void:
 		stringname_to_node_map[instance.name] = instance
 
 func execute_graph_bfs():
-	# Clear visited or running state if needed
 	var visited = {}
-	var queue = []
-	
-	# Build incoming edge count to find starting nodes
+	var queue: Array[StringName] = []
+
 	var incoming_count = {}
 	for conn in connections_map:
 		var to_node = conn[2]
 		incoming_count[to_node] = incoming_count.get(to_node, 0) + 1
 
-	# Start with nodes that have no incoming connections
+	var data_inputs: Dictionary = {}  # node_name -> { port: value }
+
 	for node_name in stringname_to_node_map.keys():
 		if incoming_count.get(node_name, 0) == 0:
 			queue.append(node_name)
 			visited[node_name] = true
+			data_inputs[node_name] = {}
 
-	# BFS traversal
-	var previous_output = {}
 	while queue.size() > 0:
 		var current_name = queue.pop_front()
 		var current_node = stringname_to_node_map.get(current_name, null)
-		if current_node:
-			previous_output = execute_node_logic(current_node, previous_output)
+		if current_node == null:
+			continue
 
-			# Find all outgoing edges from this node
-			for conn in connections_map:
-				var from_node = conn[0]
-				var to_node = conn[2]
-				if from_node == current_name and not visited.has(to_node):
+		var input_data = data_inputs.get(current_name, {})
+		var output_data = execute_node_logic(current_node, input_data)
+
+		# Propagate output to connected nodes via ports
+		for conn in connections_map:
+			var from_node = conn[0]
+			var from_port = conn[1]
+			var to_node = conn[2]
+			var to_port = conn[3]
+
+			if from_node == current_name:
+				if not data_inputs.has(to_node):
+					data_inputs[to_node] = {}
+				data_inputs[to_node][to_port] = output_data.get(from_port, null)
+
+				incoming_count[to_node] -= 1
+				if incoming_count[to_node] == 0 and not visited.has(to_node):
 					queue.append(to_node)
 					visited[to_node] = true
 
 
-func execute_node_logic(node: GraphNode, previous_output: Dictionary) -> Dictionary:
-	print_debug(node.name, previous_output)
-	match node.name:
+func execute_node_logic(node: PixflowNode, input_data: Dictionary) -> Dictionary:
+	match node.node_type:
 		"Load":
-			return { "image": node.image }
+			return {0: node.image}  # Output port 0
 		"Filter":
-			if "image" in previous_output:
-				return { "image": node.update(previous_output["image"])}
+			if input_data.has(0):  # Assuming input is connected at port 0
+				var processed = node.update(input_data[0])
+				return {0: processed}  # Output to port 0
 		_:
 			print("❓ Unknown node type: ", node.name)
-	
 	return {}
 
 func _on_graph_edit_connection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
@@ -93,24 +102,22 @@ func _on_graph_edit_connection_request(from_node: StringName, from_port: int, to
 	connections_map.append([from_node, from_port, to_node, to_port])
 	execute_graph_bfs()
 
-
 func _on_graph_edit_disconnection_request(from_node: StringName, from_port: int, to_node: StringName, to_port: int) -> void:
 	get_node("GraphEdit").disconnect_node(from_node, from_port, to_node, to_port)
 	var removal_index  = connections_map.find([from_node, from_port, to_node, to_port])
 	connections_map.remove_at(removal_index)
 	execute_graph_bfs()
 
-
 func _on_graph_edit_node_selected(node: Node) -> void:
 	selected_nodes[node] = true
 
-
 func _on_graph_edit_node_deselected(node: Node) -> void:
 	selected_nodes[node] = false
-
 
 func _on_graph_edit_delete_nodes_request(nodes: Array[StringName]) -> void:
 	for node in selected_nodes.keys():
 		if selected_nodes[node]:
 			node.queue_free()
 	selected_nodes = {}
+	
+	# TODO: remove the connects associated with it too

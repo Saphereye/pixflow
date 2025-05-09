@@ -1,13 +1,10 @@
-extends GraphNode
-
-@export var TARGET_IMAGE_HEIGHT = 200
-@export var image: Image
+extends PixflowNode
 
 @onready var file_dialog = $FileDialog
 @onready var texture_rect = $TextureRect
 
-
 func _ready() -> void:
+	node_type = "Load"
 	image = Image.new()
 	var err = image.load("res://icon.svg")
 	if err != OK:
