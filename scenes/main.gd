@@ -18,7 +18,7 @@ func _ready() -> void:
 			if file_name.ends_with(".tscn"):
 				var node_name = file_name.get_basename()  # Removes .tscn
 				var full_path = "res://scenes/Nodes/" + file_name
-				popup_menu.add_item(node_name)
+				popup_menu.add_item(node_name.capitalize())
 				node_tscn_map.append({
 					"name": node_name,
 					"path": full_path
@@ -41,7 +41,7 @@ func _on_popup_menu_id_pressed(id: int) -> void:
 		instance.global_position = get_global_mouse_position()
 		stringname_to_node_map[instance.name] = instance
 
-func execute_graph_bfs():
+func execute_graph_bfs(start_node = null):
 	var visited = {}
 	var queue: Array[StringName] = []
 
@@ -54,9 +54,14 @@ func execute_graph_bfs():
 
 	for node_name in stringname_to_node_map.keys():
 		if incoming_count.get(node_name, 0) == 0:
-			queue.append(node_name)
-			visited[node_name] = true
+			if start_node == null:
+				queue.append(node_name)
+				visited[node_name] = true
 			data_inputs[node_name] = {}
+	
+	if start_node != null:
+		queue.append(start_node)
+		visited[start_node] = true
 
 	while queue.size() > 0:
 		var current_name = queue.pop_front()
@@ -89,7 +94,7 @@ func execute_node_logic(node: PixflowNode, input_data: Dictionary) -> Dictionary
 	match node.node_type:
 		"Load":
 			return {0: node.image}  # Output port 0
-		"Filter":
+		"Filter", "Invert", "Brightness":
 			if input_data.has(0):  # Assuming input is connected at port 0
 				var processed = node.update(input_data[0])
 				return {0: processed}  # Output to port 0

@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=3 uid="uid://chuq1t373r071"]
+
+[ext_resource type="Script" uid="uid://bkak0jn1bimsj" path="res://scenes/Nodes/brightness.gd" id="1_6ekke"]
+[ext_resource type="Texture2D" uid="uid://ca5a1k2ttjoyq" path="res://icon.svg" id="2_7vxx1"]
+
+[node name="Brightness" type="GraphNode"]
+offset_right = 384.0
+offset_bottom = 256.0
+title = "Brightness"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+slot/1/left_enabled = false
+slot/1/left_type = 0
+slot/1/left_color = Color(1, 1, 1, 1)
+slot/1/left_icon = null
+slot/1/right_enabled = false
+slot/1/right_type = 0
+slot/1/right_color = Color(1, 1, 1, 1)
+slot/1/right_icon = null
+slot/1/draw_stylebox = true
+slot/2/left_enabled = false
+slot/2/left_type = 0
+slot/2/left_color = Color(1, 1, 1, 1)
+slot/2/left_icon = null
+slot/2/right_enabled = false
+slot/2/right_type = 0
+slot/2/right_color = Color(1, 1, 1, 1)
+slot/2/right_icon = null
+slot/2/draw_stylebox = true
+script = ExtResource("1_6ekke")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_7vxx1")
+stretch_mode = 3
+
+[node name="HSlider" type="HSlider" parent="."]
+layout_mode = 2
+min_value = -1.0
+max_value = 1.0
+step = 0.01
+tick_count = 10
+ticks_on_borders = true
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 2
+text = "0.0 "
+fit_content = true
+horizontal_alignment = 1
+
+[connection signal="value_changed" from="HSlider" to="." method="_on_h_slider_value_changed"]

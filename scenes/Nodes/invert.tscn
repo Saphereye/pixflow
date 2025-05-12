@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://dnpyl6cavduy7"]
+
+[ext_resource type="Script" uid="uid://bfip0lthy8b0w" path="res://scenes/Nodes/invert.gd" id="1_ip1jv"]
+[ext_resource type="Texture2D" uid="uid://ca5a1k2ttjoyq" path="res://icon.svg" id="2_3e57u"]
+
+[node name="Invert" type="GraphNode"]
+offset_right = 384.0
+offset_bottom = 256.0
+title = "Invert"
+slot/0/left_enabled = true
+slot/0/left_type = 0
+slot/0/left_color = Color(1, 1, 1, 1)
+slot/0/left_icon = null
+slot/0/right_enabled = true
+slot/0/right_type = 0
+slot/0/right_color = Color(1, 1, 1, 1)
+slot/0/right_icon = null
+slot/0/draw_stylebox = true
+script = ExtResource("1_ip1jv")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_3e57u")
+stretch_mode = 3
